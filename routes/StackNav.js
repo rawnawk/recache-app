@@ -11,7 +11,7 @@ export default function StackNav() {
     return (
         <Stack.Navigator>
             <Stack.Screen name="Drawer" component={Drawer} options={{headerShown: false}} />
-            <Stack.Screen name="ContentScreen" component={ContentScreen} />
+            <Stack.Screen name="ContentScreen" component={ContentScreen} options={{headerTitle: "Today"}} />
         </Stack.Navigator>
     )
 }
