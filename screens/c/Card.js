@@ -7,7 +7,7 @@ dayjs.extend(advancedFormat)
 
 export default function Card({data}) {
     return (
-        <View style={tw`mb-4 mx-2.5 px-3 py-3 bg-white rounded-md shadow`}>
+        <View style={tw`px-3 py-3 bg-white rounded-md shadow`}>
             <Text style={tw`text-xl mb-1`}>{data.title}</Text>
             <Text>{dayjs(data.slug, "DD-MM-YYYY").format("ddd, Do MMM YY")}</Text>
         </View>

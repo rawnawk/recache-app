@@ -1,15 +1,11 @@
-//https://github.com/react-native-datetimepicker/datetimepicker
-
-
 import React, {useState, useEffect} from 'react';
-import {View, Button, Platform, Alert, FlatList, TouchableOpacity, ScrollView} from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import {View, Alert, FlatList} from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import dayjs from 'dayjs'
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-import Card from "./c/Card"
+import tw from 'twrnc'
+import { Caption, Card } from 'react-native-paper';
 
 dayjs.extend(customParseFormat)
 
@@ -17,15 +13,14 @@ export default function HomeScreen({navigation}){
   const [pages, setPages] = useState([])
   const [loadingPages, setLoadingPages] = useState(false)
 
-  const [date, setDate] = useState(new Date());
-  const [show, setShow] = useState(false);
-
   useEffect(()=>{
-    getPageKeys()
-    setLoadingPages(false)
-  },[])
+    navigation.addListener('focus', ()=>{
+      getPages()
+      setLoadingPages(false)
+    })
+  }, [])
 
-  async function getPageKeys(){
+  async function getPages(){
     setLoadingPages(true)
     let keys, pages
     try{
@@ -46,45 +41,22 @@ export default function HomeScreen({navigation}){
   }
 
 
-  const onChange = (event, selectedDate) => {
-    const currentDate = selectedDate || date;
-    setShow(Platform.OS === 'ios');
-    setDate(currentDate);
-  };
-
-  const showDatepicker = () => {
-    showMode('date');
-  };
-
-  const showTimepicker = () => {
-    showMode('time');
-  };
-
-  function handleCreate(){
-    navigation.navigate('ContentScreen', {pageslug: dayjs(date).format("DD-MM-YYYY")})
-  }
-
   return (
-    <View>
-        <StatusBar />
-        <DateTimePicker
-          testID="dateTimePicker"
-          value={date}
-          is24Hour={true}
-          display="spinner"
-          onChange={onChange}
-        />
-        <Button title="Create" onPress={handleCreate} />
+    <View style={tw`flex-1`}>
+        <StatusBar style="auto" />
         {!loadingPages &&
-          <FlatList data={pages} keyExtractor={item => item.slug} renderItem={({item})=>{
-            return (
-                <ScrollView>
-                  <TouchableOpacity onPress={()=>navigation.navigate('ContentScreen', {pageslug: item.slug})}>
-                    <Card data={item} />
-                  </TouchableOpacity>
-                </ScrollView>
-            )
-          }} />
+          <View style={tw`flex-1`}>
+            <FlatList data={pages} keyExtractor={item => item.slug} renderItem={({item})=>{
+              return (
+                <Card style={tw`mx-3 my-2`} onPress={()=>navigation.navigate('ContentScreen', {pageslug: item.slug})}>
+                  <Card.Title title={item.title} />
+                  <Card.Content>
+                    <Caption>{dayjs(item.slug, "DD-MM-YYYY").format("ddd, Do MMM YY")}</Caption>
+                  </Card.Content>
+                </Card>
+              )
+            }} />
+          </View>
         }
     </View>
   );
