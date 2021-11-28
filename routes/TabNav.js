@@ -3,7 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons'; 
 import HomeScreen from '../screens/HomeScreen'
 import SearchScreen from '../screens/SearchScreen'
-import ProfileStack from './ProfileStack'
+import ProfileScreen from '../screens/ProfileScreen'
 import { View, Text, TouchableOpacity, TouchableWithoutFeedback, Platform } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import tw from 'twrnc'
@@ -19,9 +19,9 @@ export default function TabNav() {
             <CustomTabBar navigation={navigation} />
           )
         }} >
-          <Tab.Screen name="Home" component={HomeScreen} />
+          <Tab.Screen name="Home" component={HomeScreen} options={{headerTitle:"Recache"}} />
           <Tab.Screen name="Search" component={SearchScreen} />
-          <Tab.Screen name="Profile" component={ProfileStack} options={{headerShown: false}} />
+          <Tab.Screen name="Profile" component={ProfileScreen} />
         </Tab.Navigator>
     );
   }

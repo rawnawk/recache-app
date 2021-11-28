@@ -73,18 +73,11 @@ export default function ContentScreen({route, navigation}) {
         }
         newPageData.data.push(newTextToBeSaved)
         try{
-            await AsyncStorage.setItem(page.slug, JSON.stringify(newPageData))
-            setPage(newPageData)
-            setNewText("")
-            setTextModal(false)
-        }catch(err){
-            Alert.alert(err)
-        }
-    }
-    async function deletePage(){
-        try{
-            await AsyncStorage.removeItem(pageslug)
-            navigation.goBack()
+            await AsyncStorage.setItem(page.slug, JSON.stringify(newPageData)).then(()=>{
+                setPage(newPageData)
+                setNewText("")
+                setTextModal(false)
+            })
         }catch(err){
             Alert.alert(err)
         }
@@ -134,6 +127,14 @@ export default function ContentScreen({route, navigation}) {
             Alert.alert(err)
         }
     }
+    async function deletePage(){
+        try{
+            await AsyncStorage.removeItem(pageslug)
+            navigation.goBack()
+        }catch(err){
+            Alert.alert(err)
+        }
+    }
     if(loading){
         return (
             <View style={tw`flex-1 justify-center`}>
@@ -150,7 +151,7 @@ export default function ContentScreen({route, navigation}) {
                                 <TextInput style={tw`border rounded-md border-gray-200 text-black p-2.5`} placeholder="Title" value={title} onChangeText={(val)=>setTitle(val)} autoFocus={true} />
                             </View>
                             <View style={tw`flex-row justify-center mt-16`}>
-                                <Button mode="contained" onPress={createPage}>Create</Button>
+                                <Button mode="contained" disabled={title.length<4} onPress={createPage}>Create</Button>
                                 <Button color="red" onPress={handleCancle}>Cancel</Button>
                             </View>
                         </View>
@@ -178,7 +179,7 @@ export default function ContentScreen({route, navigation}) {
                     }
                 </View>
                 <View style={tw`mx-3 mb-4`}>
-                    {page?.data.length===0 && 
+                    {page?.data.length===0 && !page?.selfie && 
                         <View style={tw`items-center mt-4 mb-16`}>
                             <IconButton color="gray" icon="timer-sand-empty" size={120} />
                             <Headline style={tw`text-gray-500`}>Your day seems empty.</Headline>
@@ -233,7 +234,7 @@ export default function ContentScreen({route, navigation}) {
                         </View>
                         <View style={tw`flex-row justify-end mt-3`}>
                             <Button color="red" onPress={()=>{setNewText("");setTextModal(false);}}>Cancel</Button>
-                            <Button style={tw`mr-2`} mode="contained" onPress={saveText}>Save</Button>
+                            <Button style={tw`mr-2`} disabled={newText.length < 4} mode="contained" onPress={saveText}>Save</Button>
                         </View>
                     </View>
                 </TouchableWithoutFeedback>
